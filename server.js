@@ -3,6 +3,8 @@ import connectDB from "./db.js";
 import authRoutes from "./index.js";
 import dotenv from "dotenv";
 import cors from "cors";
+import workoutRoutes from "./routes/workouts.js"
+import sinRoutes from "./routes/sins.js"; 
 
 dotenv.config();
 
@@ -15,5 +17,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/auth", authRoutes);
+app.use("/workouts", workoutRoutes);
+app.use("/sins", sinRoutes);
 
 app.listen(PORT, () => console.log(`Server running on ${PORT}`));

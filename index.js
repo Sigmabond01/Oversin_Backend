@@ -5,13 +5,30 @@ import { User } from "./models/User.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import { z } from "zod";
+import { validate } from "./middleware/validate.js";
 
 dotenv.config();
 
 const router = Router();
 const JWT_SECRET = process.env.JWT_SECRET
 
-router.post("/register", async (req, res) => {
+const registerSchema = z.object({
+    body: z.object({
+        username: z.string().min(4, "Username must be atleast 4 characters!"),
+        email: z.string().email("Invalid email address!"),
+        password: z.string().min(6, "password must be atleast 6 characters!"),
+    }),
+});
+
+const loginSchema = z.object({
+    body: z.object({
+        email: z.string().email("Invalid email address!"),
+        password: z.string().min(6, "password must be atleast 6 characters!"),
+    }),
+});
+
+router.post("/register", validate(registerSchema), async (req, res) => {
     const username = req.body.username;
     const email = req.body.email;
     const password = req.body.password;
@@ -59,7 +76,7 @@ router.post("/register", async (req, res) => {
     }
 });
 
-router.post("/login", async(req, res) => {
+router.post("/login", validate(loginSchema), async(req, res) => {
     const email = req.body.email;
     const password = req.body.password;
 
