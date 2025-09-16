@@ -1,5 +1,3 @@
-//ADD ZOD VALIDATION LATER
-
 import { Router } from "express";
 import { User } from "./models/User.js";
 import bcrypt from "bcrypt";
@@ -7,11 +5,22 @@ import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import { z } from "zod";
 import { validate } from "./middleware/validate.js";
+import rateLimit from "express-rate-limit";
 
 dotenv.config();
 
 const router = Router();
 const JWT_SECRET = process.env.JWT_SECRET
+
+const authLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 10,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: {
+        message: "Too many attempts! Please try again later!"
+    }
+})
 
 const registerSchema = z.object({
     body: z.object({
@@ -28,7 +37,7 @@ const loginSchema = z.object({
     }),
 });
 
-router.post("/register", validate(registerSchema), async (req, res) => {
+router.post("/register", authLimiter, validate(registerSchema), async (req, res) => {
     const username = req.body.username;
     const email = req.body.email;
     const password = req.body.password;
@@ -76,7 +85,7 @@ router.post("/register", validate(registerSchema), async (req, res) => {
     }
 });
 
-router.post("/login", validate(loginSchema), async(req, res) => {
+router.post("/login", authLimiter, validate(loginSchema), async(req, res) => {
     const email = req.body.email;
     const password = req.body.password;
 

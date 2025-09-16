@@ -7,6 +7,7 @@ import workoutRoutes from "./routes/workouts.js"
 import sinRoutes from "./routes/sins.js"; 
 import userRoutes from "./routes/users.js";
 import leaderboardRoutes from "./routes/leaderboard.js"
+import { logger } from "./middleware/logger.js";
 
 dotenv.config();
 
@@ -17,6 +18,11 @@ const PORT = process.env.PORT || 5000;
 
 app.use(cors());
 app.use(express.json());
+app.use(logger);
+
+app.use("/nice", (req, res) => {
+    res.status(200).json({ status: "ok", message: "API seems ok" })
+});
 
 app.use("/auth", authRoutes);
 app.use("/workouts", workoutRoutes);
