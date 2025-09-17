@@ -44,6 +44,13 @@ router.post("/register", authLimiter, validate(registerSchema), async (req, res)
 
     try {
 
+        let existingUsername = await User.findOne({ username })
+        if(existingUsername) {
+            return res.status(409).json({
+                message: "Username alredy exists!"
+            })
+        }
+
         let existingUser = await User.findOne({email})
             if(existingUser){
                 return res.status(409).json({
