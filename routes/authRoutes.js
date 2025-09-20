@@ -1,10 +1,10 @@
 import { Router } from "express";
-import { User } from "./models/User.js";
+import { User } from "../models/User.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import { z } from "zod";
-import { validate } from "./middleware/validate.js";
+import { validate } from "../middleware/validate.js";
 import rateLimit from "express-rate-limit";
 
 dotenv.config();
