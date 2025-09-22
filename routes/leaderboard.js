@@ -1,10 +1,9 @@
 import { Router } from "express";
-import { authMiddleware } from "../middleware/auth.js";
 import { User } from "../models/User.js";
 
 const router = Router();
 
-router.get("/", authMiddleware, async (req, res) => {
+router.get("/", async (req, res) => {
     try {
         const leaderboard = await User.aggregate([
             {
