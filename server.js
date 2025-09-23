@@ -17,6 +17,22 @@ await connectDB();
 
 const PORT = process.env.PORT || 5000;
 
+const allowedOrigins = [process.env.FRONTEND_URL, 'http://localhost:5173'];
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1) {
+      const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  },
+  methods: "GET,POST,PUT,DELETE",
+  credentials: true,
+  allowedHeaders: 'Content-Type, x-auth-token'
+};
+
 app.use(cors());
 app.use(express.json());
 app.use(logger);
